@@ -48,7 +48,8 @@ jobs:
       - name: Get Server Version Tag
         id: server-version
         run: |
-          echo "version=$(cat ${{ inputs.server-version-file }})" >> "$GITHUB_OUTPUT"
+          echo "version=$(cat ${{ inputs.server-version-file }} | cut -c 2-)" \
+          >> "$GITHUB_OUTPUT"
     outputs:
       ref: ${{ steps.app-ref.outputs.ref }}
       server-version: ${{ steps.server-version.outputs.version }}
