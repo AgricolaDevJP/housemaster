@@ -54,6 +54,8 @@ jobs:
           gh release --repo ${{ inputs.archive-file-repository }} \
           download ${{ steps.app-version.outputs.version }} \
           -p ${{ inputs.archive-file-name }}
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Deploy Lambda
         run: |
           lambroll deploy --function ./function.jsonnet \
