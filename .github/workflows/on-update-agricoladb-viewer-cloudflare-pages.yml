@@ -1,0 +1,19 @@
+name: On Update agricoladb-server Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - components/agricoladb-viewer/cloudflare-pages/**
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/wf-deploy-cloudflare-pages.yml
+    with:
+      working-directory: ./components/agricoladb-viewer/cloudflare-pages
+      environment-name: agricoladb-viewer-production
+      environment-url: https://db.agricolajp.dev/
+      source-repository: AgricolaDevJP/agricoladb-viewer
+      build-cmd: build --site https://db.agricolajp.dev
+      cloudflare-project-name: agricoladb-viewer
+    secrets: inherit

@@ -1,0 +1,76 @@
+name: Deploy Cloudflare Pages
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      environment-name:
+        required: true
+        type: string
+      environment-url:
+        required: true
+        type: string
+      source-repository:
+        required: true
+        type: string
+      build-cmd:
+        required: true
+        type: string
+      cloudflare-project-name:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ inputs.environment-name }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get Target Ref
+        id: app-ref
+        run: |
+          echo "ref=$(cat ref.txt)" >> "$GITHUB_OUTPUT"
+    outputs:
+      ref: ${{ steps.app-ref.outputs.ref }}
+
+  deploy:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment-name }}
+      url: ${{ inputs.environment-url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.source-repository }}
+          ref: ${{ needs.prepare.outputs.ref }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: pnpm
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm ${{ inputs.build-cmd }}
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@1
+        with:
+          accountId: d8ffa051ff726193056507455bf58eb1
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          projectName: ${{ inputs.cloudflare-project-name }}
+          directory: dist/
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
