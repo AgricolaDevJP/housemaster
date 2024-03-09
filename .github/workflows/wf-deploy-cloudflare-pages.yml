@@ -28,10 +28,6 @@ on:
         required: true
         type: string
 
-permissions:
-  id-token: write
-  contents: read
-
 concurrency:
   group: ${{ inputs.environment-name }}
 
@@ -48,7 +44,7 @@ jobs:
       - name: Get Server Version Tag
         id: server-version
         run: |
-          echo "version=$(cat ${{ inputs.server-version-file }} | cut -c 2-)" \
+          echo "version=$(cut -c 2- ${{ inputs.server-version-file }})" \
           >> "$GITHUB_OUTPUT"
     outputs:
       ref: ${{ steps.app-ref.outputs.ref }}
@@ -81,6 +77,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm ${{ inputs.build-cmd }}
+        env:
+          TZ: Asia/Tokyo
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@1
         with:
