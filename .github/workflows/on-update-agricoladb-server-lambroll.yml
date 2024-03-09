@@ -3,6 +3,8 @@ name: On Update agricoladb-server lambroll
 on:
   push:
     branches: [main]
+    paths:
+      - components/agricoladb-server/lambroll/**
 
 jobs:
   deploy:
