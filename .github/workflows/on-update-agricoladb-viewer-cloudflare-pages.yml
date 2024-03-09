@@ -3,8 +3,8 @@ name: On Update agricoladb-viewer Cloudflare Pages
 on:
   push:
     branches: [main]
-    paths:
-      - components/agricoladb-viewer/cloudflare-pages/**
+    # paths:
+    #   - components/agricoladb-viewer/cloudflare-pages/**
 
 jobs:
   deploy:
