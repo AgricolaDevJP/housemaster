@@ -1,4 +1,4 @@
-name: On Update agricoladb-server Cloudflare Pages
+name: On Update agricoladb-viewer Cloudflare Pages
 
 on:
   push:
@@ -16,4 +16,6 @@ jobs:
       source-repository: AgricolaDevJP/agricoladb-viewer
       build-cmd: build --site https://db.agricolajp.dev
       cloudflare-project-name: agricoladb-viewer
+      server-image: ghcr.io/agricoladevjp/agricoladb-server/server
+      server-version-file: ./components/agricoladb-server/lambroll/version.txt
     secrets: inherit

@@ -15,6 +15,12 @@ on:
       source-repository:
         required: true
         type: string
+      server-image:
+        required: true
+        type: string
+      server-version-file:
+        required: true
+        type: string
       build-cmd:
         required: true
         type: string
@@ -32,17 +38,20 @@ concurrency:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.working-directory }}
     steps:
       - uses: actions/checkout@v4
       - name: Get Target Ref
         id: app-ref
         run: |
           echo "ref=$(cat ref.txt)" >> "$GITHUB_OUTPUT"
+        working-directory: ${{ inputs.working-directory }}
+      - name: Get Server Version Tag
+        id: server-version
+        run: |
+          echo "version=$(cat ${{ inputs.server-version-file }})" >> "$GITHUB_OUTPUT"
     outputs:
       ref: ${{ steps.app-ref.outputs.ref }}
+      server-version: ${{ steps.server-version.outputs.version }}
 
   deploy:
     needs: [prepare]
@@ -50,6 +59,11 @@ jobs:
     environment:
       name: ${{ inputs.environment-name }}
       url: ${{ inputs.environment-url }}
+    services:
+      server:
+        image: ${{ inputs.server-image }}:${{ needs.prepare.outputs.server-version }}
+        ports:
+          - 8000:8000
     steps:
       - uses: actions/checkout@v4
         with:
