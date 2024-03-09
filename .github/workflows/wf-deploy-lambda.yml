@@ -1,0 +1,61 @@
+name: Deploy Lambda
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      environment-name:
+        required: true
+        type: string
+      environment-url:
+        required: true
+        type: string
+      archive-file-repository:
+        required: true
+        type: string
+      archive-file-name:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ inputs.environment-name }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment-name }}
+      url: ${{ inputs.environment-url }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # TODO: replace with another role
+          role-to-assume: arn:aws:iam::131551699606:role/agricoladb-server-github-actions-role
+          aws-region: ap-northeast-1
+      - uses: fujiwara/lambroll@v1
+        with:
+          version: v1.0.1
+      - name: Get Target Version Tag
+        id: app-version
+        run: |
+          echo "version=$(cat version.txt)" >> "$GITHUB_OUTPUT"
+      - name: Download Zip Archive from GitHub Releases
+        run: |
+          gh release --repo ${{ inputs.archive-file-repository }} \
+          download ${{ steps.app-version.outputs.version }} \
+          -p ${{ inputs.archive-file-name }}
+      - name: Deploy Lambda
+        run: |
+          lambroll deploy --function ./function.jsonnet \
+          --src ${{ inputs.archive-file-name }} \
+          --region ap-northeast-1

@@ -1,0 +1,16 @@
+name: On Update agricoladb-server lambroll
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/wf-deploy-lambda.yml
+    with:
+      working-directory: ./components/agricoladb-server/lambroll
+      environment-name: agricoladb-server-production
+      environment-url: https://api.db.agricolajp.dev/
+      archive-file-repository: AgricolaDevJP/agricoladb-server
+      archive-file-name: agricoladb-server-lambda_arm64.zip
+    secrets: inherit
