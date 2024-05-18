@@ -86,4 +86,3 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           projectName: ${{ inputs.cloudflare-project-name }}
           directory: dist/
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
