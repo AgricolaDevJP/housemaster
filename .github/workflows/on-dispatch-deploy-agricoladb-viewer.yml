@@ -1,0 +1,18 @@
+name: Deploy agricoladb-viewer manually
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/wf-deploy-cloudflare-pages.yml
+    with:
+      working-directory: ./components/agricoladb-viewer/cloudflare-pages
+      environment-name: agricoladb-viewer-production
+      environment-url: https://db.agricolajp.dev/
+      source-repository: AgricolaDevJP/agricoladb-viewer
+      build-cmd: build --site https://db.agricolajp.dev
+      cloudflare-project-name: agricoladb-viewer
+      server-image: ghcr.io/agricoladevjp/agricoladb-server/server
+      server-version-file: ./components/agricoladb-server/lambroll/version.txt
+    secrets: inherit
