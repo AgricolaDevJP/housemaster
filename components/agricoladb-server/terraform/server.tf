@@ -1,5 +1,5 @@
 module "server" {
-  source             = "github.com/AgricolaDevJP/agricoladb-server//terraform/modules/agricoladb-server-aws-serverless?ref=v2.0.11"
+  source             = "github.com/AgricolaDevJP/agricoladb-server//terraform/modules/agricoladb-server-aws-serverless?ref=v2.0.13"
   name               = "agricoladb-server"
   custom_domain_name = "api.db.agricolajp.dev"
   allowed_origins = [
