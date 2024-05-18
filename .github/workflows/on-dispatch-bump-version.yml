@@ -1,0 +1,13 @@
+on:
+  repository_dispatch:
+    types:
+      - bump-version
+
+jobs:
+  bump:
+    uses: ./.github/workflows/wf-bump-version.yml
+    with:
+      new-version: ${{ github.event.client_payload.new-version }}
+      target-name: ${{ github.event.client_payload.target-name }}
+      target-file: ${{ github.event.client_payload.target-file }}
+    secrets: inherit
