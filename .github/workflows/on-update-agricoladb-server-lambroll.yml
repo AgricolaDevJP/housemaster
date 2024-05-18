@@ -7,7 +7,7 @@ on:
       - components/agricoladb-server/lambroll/**
 
 jobs:
-  deploy:
+  deploy-server:
     uses: ./.github/workflows/wf-deploy-lambda.yml
     with:
       working-directory: ./components/agricoladb-server/lambroll
@@ -15,4 +15,17 @@ jobs:
       environment-url: https://api.db.agricolajp.dev/
       archive-file-repository: AgricolaDevJP/agricoladb-server
       archive-file-name: agricoladb-server-lambda_arm64.zip
+    secrets: inherit
+  deploy-frontend:
+    needs: [deploy-server]
+    uses: ./.github/workflows/wf-deploy-cloudflare-pages.yml
+    with:
+      working-directory: ./components/agricoladb-viewer/cloudflare-pages
+      environment-name: agricoladb-viewer-production
+      environment-url: https://db.agricolajp.dev/
+      source-repository: AgricolaDevJP/agricoladb-viewer
+      build-cmd: build --site https://db.agricolajp.dev
+      cloudflare-project-name: agricoladb-viewer
+      server-image: ghcr.io/agricoladevjp/agricoladb-server/server
+      server-version-file: ./components/agricoladb-server/lambroll/version.txt
     secrets: inherit
