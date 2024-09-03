@@ -29,7 +29,7 @@ jobs:
         with:
           app-id: 792029
           private-key: ${{ secrets.AGRICOLADEVJP_BOT_PRIVATE_KEY }}
-      - uses: peter-evans/create-pull-request@v6
+      - uses: peter-evans/create-pull-request@v7
         with:
           commit-message: Bump ${{ inputs.target-name }} to ${{ inputs.new-version }}
           title: Bump ${{ inputs.target-name }} to ${{ inputs.new-version }}
