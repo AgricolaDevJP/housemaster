@@ -35,7 +35,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Get Target Ref
         id: app-ref
         run: |
@@ -62,7 +62,7 @@ jobs:
         ports:
           - 8000:8000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: ${{ inputs.source-repository }}
           ref: ${{ needs.prepare.outputs.ref }}
