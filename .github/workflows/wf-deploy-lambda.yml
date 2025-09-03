@@ -37,7 +37,7 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           # TODO: replace with another role
           role-to-assume: arn:aws:iam::131551699606:role/agricoladb-server-github-actions-role
