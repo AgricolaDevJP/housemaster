@@ -19,7 +19,7 @@ jobs:
     name: Create a pull request
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: echo "$NEW_VERSION" > "$TARGET_FILE";
         env:
           NEW_VERSION: "${{ inputs.new-version }}"
